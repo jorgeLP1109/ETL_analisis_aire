@@ -15,13 +15,13 @@ def ej_1_cargar_datos_demograficos() -> pd.DataFrame:
     return data
 
 def ej_2_cargar_calidad_aire(ciudades: Set[str]) -> None:
-    api_url = "https://api-ninjas.com/api/airquality"
-    
+    api_url = 'https://api.api-ninjas.com/v1/airquality'
+
     # Crear un DataFrame para almacenar los datos de calidad del aire
     calidad_aire_df = pd.DataFrame(columns=['city', 'CO', 'NO2', 'O3', 'SO2', 'PM2.5', 'PM10', 'overall_aqi'])
-    
+
     for ciudad in ciudades:
-        response = requests.get(api_url, params={'city': ciudad})
+        response = requests.get(api_url, params={'city': ciudad}, headers={'X-Api-Key': 'YOUR_API_KEY'})
         if response.status_code == 200:
             air_quality_data = response.json()
             calidad_aire_df = calidad_aire_df.append({
@@ -37,7 +37,7 @@ def ej_2_cargar_calidad_aire(ciudades: Set[str]) -> None:
     
     # Imprimir el DataFrame y guardar los datos en un archivo CSV
     print(calidad_aire_df)
-    #calidad_aire_df.to_csv("ciudades.csv", index=False)
+    calidad_aire_df.to_csv("ciudades.csv", index=False)
 
 # Tests
 def _hash(data):
