@@ -37,7 +37,7 @@ def ej_2_cargar_calidad_aire(ciudades: Set[str]) -> None:
     
     # Imprimir el DataFrame y guardar los datos en un archivo CSV
     print(calidad_aire_df)
-    calidad_aire_df.to_csv("ciudades.csv", index=False)
+    #calidad_aire_df.to_csv("ciudades.csv", index=False)
 
 # Tests
 def _hash(data):
