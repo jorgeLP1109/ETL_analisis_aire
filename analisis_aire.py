@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from typing import Set
 from hashlib import sha256
-import sqlite3
+
 
 def ej_1_cargar_datos_demograficos() -> pd.DataFrame:
     url = "https://public.opendatasoft.com/explore/dataset/us-cities-demographics/download/?format=csv&timezone=Europe/Berlin&lang=en&use_labels_for_header=true&csv_separator=%3B"
@@ -33,10 +33,12 @@ def ej_2_cargar_calidad_aire(ciudades: Set[str]) -> None:
                 'PM2.5': air_quality_data['data']['concentration']['pm25'],
                 'PM10': air_quality_data['data']['concentration']['pm10'],
                 'overall_aqi': air_quality_data['data']['aqi']['overall']
-            }, ignore_index=True)
+            }, ignore_index=True) # type: ignore
     
-    # Guardar los datos en un archivo CSV
-    calidad_aire_df.to_csv("ciudades.csv", index=False)
+    # Imprimir el DataFrame y guardar los datos en un archivo CSV
+    print(calidad_aire_df)
+    calidad_aire_df.to_csv(r"C:\Users\Jorge\Documents\Programacion\ada_school\ETL_analisis_aire\ETL_analisis_aire\ciudades.csv", index=False)
+    #calidad_aire_df.to_csv("ciudades.csv", index=False)
 
 # Tests
 def _hash(data):
@@ -53,11 +55,11 @@ def test_sol_1():
 def test_sol_2():
     df = ej_1_cargar_datos_demograficos()
     ej_2_cargar_calidad_aire(set(df["City"].tolist()))
-    
+
     ciudades_df = pd.read_csv("ciudades.csv")
-    
+
     actual = ciudades_df.loc[:9].to_dict()
-    
+
     expected = {
         'CO': {0: 250.34, 1: 287.06, 2: 247.0, 3: 280.38, 4: 323.77, 5: 243.66, 6: 173.57, 7: 211.95, 8: 263.69, 9: 260.35},
         'NO2': {0: 3.43, 1: 0.76, 2: 0.56, 3: 1.06, 4: 1.67, 5: 0.91, 6: 0.23, 7: 0.84, 8: 0.8, 9: 1.71},
@@ -68,11 +70,5 @@ def test_sol_2():
         'overall_aqi': {0: 220, 1: 170, 2: 34, 3: 159, 4: 128, 5: 162, 6: 148, 7: 177, 8: 162, 9: 205},
         'city': {0: 'Perris', 1: 'Mount Vernon', 2: 'Mobile', 3: 'Dale City', 4: 'Maple Grove', 5: 'Muncie', 6: 'San Clemente', 7: 'Providence', 8: 'Norman', 9: 'Hoover'}
     }
-    
+
     assert expected == actual
-
-conn = sqlite3.connect("demografia_calidad_aire.db")
-
-# Cargar datos demográficos
-demografia_df = ej_1_cargar_datos_demograficos()
-demografia_df.to_sql("demografia", conn, index=False, if_exists="replace")
